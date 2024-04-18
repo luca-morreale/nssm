@@ -1,0 +1,143 @@
+{
+    "dataset":
+    {
+        "name":"SurfaceMapDataset",
+        "num_points":1024,
+        "sample_source":"REPLACE_PATH/samples/source_manual.pth",
+        "sample_target":"REPLACE_PATH/samples/target_manual.pth",
+        "matches_path":"REPLACE_PATH/matches/matches_manual.txt",
+        "num_matches":128,
+        "num_boundary_points":128,
+        "num_workers":0,
+        "shuffle":true,
+        "batch_size":null,
+        "pin_memory":false
+    },
+    "model":
+    {
+        "name": "NeuralMap",
+        "structure": {
+            "map":
+            {
+                "name":"ResidualMLP",
+                "input_size": 2,
+                "output_size": 2,
+                "layers": [128,128,128,128],
+                "act": "Softplus",
+                "act_params": {},
+                "bias": true,
+                "init": "xavier",
+                "norm": null,
+                "drop": 0.0
+            },
+            "source_surface":
+            {
+                "name":"ResidualMLP",
+                "input_size": 2,
+                "output_size": 3,
+                "layers": [256,256,256,256,256,256,256,256],
+                "act": "Softplus",
+                "act_params": {},
+                "bias": true,
+                "init": "xavier",
+                "norm":null,
+                "drop":0.0,
+                "path":"REPLACE_PATH/overfit/overfit_source_manual/models/weights.pth"
+            },
+            "target_surface":
+            {
+                "name":"ResidualMLP",
+                "input_size": 2,
+                "output_size": 3,
+                "layers": [256,256,256,256,256,256,256,256],
+                "act": "Softplus",
+                "act_params": {},
+                "bias": true,
+                "init": "xavier",
+                "norm":null,
+                "drop":0.0,
+                "path":"REPLACE_PATH/overfit/overfit_target_manual/models/weights.pth"
+            }
+        }
+    },
+    "loss":
+    {
+        "name":"DomainSurfaceMapLoss",
+        "params":
+        {
+            "surf_map":"IsometricSurfaceMapLoss",
+            "landmarks":"L2Loss",
+            "domain":"UnitCircleDomain",
+            "reg_distortion":1.0e-1,
+            "reg_folding":1.0e6,
+            "reg_domain":0.0,
+            "reg_landmarks":1.0e6,
+            "reg_landmarks3D":0.0,
+            "reg_boundary":1.0e6
+        }
+    },
+    "optimizers":
+    [
+        {
+            "name":"RMSprop",
+            "params":
+            {
+                "lr":1.0e-4,
+                "momentum":0.9
+            }
+        }
+    ],
+    "schedulers":
+    [
+        {
+            "name":"CosineAnnealingLR",
+            "params":
+            {
+                "T_max":50000,
+                "eta_min":0.0
+            },
+            "opt_idx":0
+        }
+    ],
+    "tasks":
+    {
+        "name":"surface",
+        "train":"SurfaceMapTrainRunner",
+        "checkpoint":"SurfaceMapCheckpointRunner",
+        "params":
+        {
+            "render_meshes":false,
+            "save_patches":false,
+            "save_timelapse":false,
+            "save_kaolin":false,
+            "save_mesh_edges":false,
+            "debug":false,
+            "save_model_object":true,
+            "run_losses":true
+        }
+    },
+    "logging":
+    {
+        "name":"TensorboardLogger",
+        "namespace":"map_manual",
+        "identifier":"REPLACE_NAME",
+        "tags":["bombur","L2"],
+        "base_path":"REPLACE_PATH/logging/",
+        "log_images":true,
+        "log_model":true,
+        "log_model_freq":1000
+    },
+    "checkpointing":
+    {
+        "build_full_path":false,
+        "base_path":"REPLACE_PATH/map/"
+    },
+    "loop":
+    {
+        "name": "GradientTrainingLoop",
+        "num_epochs":50000,
+        "grad_stop":1.0e-4,
+        "checkpoint_epoch":2000
+    },
+    "verbose":false
+}

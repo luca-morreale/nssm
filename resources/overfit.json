@@ -1,0 +1,96 @@
+{
+    "dataset":
+    {
+        "name":"ModelDataset",
+        "num_points":1024,
+        "sample_path":"REPLACE_PATH/samples/REPLACE_NAME.pth",
+        "num_workers":0,
+        "batch_size":null,
+        "shuffle":true,
+        "pin_memory":true,
+        "mask_normals_type":"NORMALS"
+    },
+    "model":
+    {
+        "name": "ResidualMLP",
+        "structure": {
+            "input_size": 2,
+            "output_size": 3,
+            "layers": [256,256,256,256,256,256,256,256],
+            "act": "Softplus",
+            "act_params": {},
+            "bias": true,
+            "init": "xavier",
+            "norm":null,
+            "drop":0.0
+        }
+    },
+    "loss":
+    {
+        "name":"MSELoss",
+        "params":
+        {
+            "reg_normals":1.0e-3,
+            "reg_boundary":1.0e-1
+        }
+    },
+    "optimizers":
+    [
+        {
+            "name":"RMSprop",
+            "params":
+            {
+                "lr":1.0e-4,
+                "momentum":0.9
+            }
+        }
+    ],
+    "schedulers":
+    [
+        {
+            "name":"CosineAnnealingLR",
+            "opt_idx":0,
+            "params":
+            {
+                "eta_min":0,
+                "T_max":200000
+            }
+        }
+    ],
+    "tasks":
+    {
+        "name":"surface",
+        "train":"SurfaceTrainRunner",
+        "checkpoint":"SurfaceCheckpointRunner",
+        "params":
+        {
+            "save_patches":false,
+            "save_timelapse":false,
+            "save_kaolin":false,
+            "save_mesh_edges":false
+        }
+    },
+    "logging":
+    {
+        "name":"TensorboardLogger",
+        "namespace":"overfit",
+        "identifier":"REPLACE_NAME",
+        "base_path":"REPLACE_PATH/logging/"
+    },
+    "checkpointing":
+    {
+        "build_full_path":false,
+        "base_path":"REPLACE_PATH/overfit/"
+    },
+    "rendering":
+    {
+        "config":"/home/luca/workspace/SphereSeamlessMap_codebase/rendering_configs/any.json"
+    },
+    "loop":
+    {
+        "name": "GradientTrainingLoop",
+        "num_epochs":200000,
+        "grad_stop":1.0e-5,
+        "checkpoint_epoch":5000
+    }
+}

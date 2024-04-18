@@ -16,7 +16,7 @@ This repository contains code to train a Neural Semantic Surface Maps and a [Neu
 To set up the environment you can download the docker image and build it or install all the required packages in your conda environment (see docker image).
 
 ```bash
-docker build --build-arg username=luca --build-arg userid=`id -u` -t nssm ./nssm_code_release/
+docker build --build-arg username=luca --build-arg userid=`id -u` -t nssm ./nssm/
 ```
 This will create a docker image, the sudo password is `docker`.
 
@@ -63,7 +63,7 @@ NOTE: the code will look for folder called `meshes` containing a `source.obj` an
 You can run the full pipeline with just one script:
 
 ```bash
-cd nssm_code_release
+cd nssm
 ./run_pair.sh ~/workspace/nssm_pair
 ```
 

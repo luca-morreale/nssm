@@ -11,7 +11,14 @@
 This repository contains code to train a Neural Semantic Surface Maps and a [Neural Surface Maps](https://geometry.cs.ucl.ac.uk/projects/2021/neuralmaps/).
 
 
-# Setup
+# Table of Contents
+
+1. [Setup](#setup)
+2. [Preprocessing](#preprocess)
+3. [Optimization](#optimize)
+4. [Bibtex](#bibtex)
+
+# Setup <a name="setup"/>
 
 To set up the environment you can download the docker image and build it or install all the required packages in your conda environment (see docker image).
 
@@ -37,12 +44,12 @@ Now compile the C++ code to parametrize a mesh:
 cd parametrization_cpp
 mkdir build
 cd build
-cmake .. 
+cmake ..
 make -j4
 ```
 
 
-# Preprocessing
+# Preprocessing <a name="preprocess"/>
 
 Create a folder for the shape pair, inside it create a folder called `meshes` containing the source and target mesh (both obj files).
 
@@ -58,7 +65,7 @@ That's it, you are ready to optimize a map between them!
 
 NOTE: the code will look for folder called `meshes` containing a `source.obj` and `target.obj` file. If this does not happen, then the whole pipeline will crash.
 
-# Optimization
+# Optimization <a name="optimize"/>
 
 You can run the full pipeline with just one script:
 
@@ -73,7 +80,7 @@ The map is contained inside the `nssm_pair/map` folder (both model weights and m
 
 ---
 
-# Bibtex
+# Bibtex <a name="bibtex"/>
 
 ```
 @article{morreale2024neural,
